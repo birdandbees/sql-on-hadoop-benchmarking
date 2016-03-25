@@ -23,7 +23,7 @@ if __name__ == '__main__':
 
     # Performance testing for hive
     query_generator = QueryGenerator('', 'sql/hive')
-    hive_engine = HiveEngine('ls ', '', query_generator)
+    hive_engine = HiveEngine('hive -S -f  ', ' >/dev/null', query_generator)
     # turn off system cache
     hive_engine.setup('echo 1 > /proc/sys/vm/drop_cached ')
     hive_engine.perf_run(6)
@@ -31,7 +31,7 @@ if __name__ == '__main__':
 
     # Performance testing for impala
     query_generator = QueryGenerator('', 'sql/impala')
-    impala_engine = ImpalaEngine('ls ', '', query_generator)
+    impala_engine = ImpalaEngine('impala-shell -B -f  ', ' >/dev/null', query_generator)
     impala_engine.perf_run(6)
     impala_engine.report()
 
@@ -64,4 +64,4 @@ if __name__ == '__main__':
     drill_engine.report()
 
 
-    hive_engine.teardown('echo 1 > /proc/sys/vm/drop_cached ')
+    hive_engine.teardown('echo 0 > /proc/sys/vm/drop_cached ')
