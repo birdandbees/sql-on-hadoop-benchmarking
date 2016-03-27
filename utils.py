@@ -10,7 +10,7 @@ def fn_timer(function):
         t0 = time.time()
         result = function(*args, **kwargs)
         t1 = time.time()
-        logging.info("Total time running %s: %s seconds" %
+        logging.debug("Total time running %s: %s seconds" %
                (function.func_name, str(t1-t0))
               )
         return result + str(t1 - t0)

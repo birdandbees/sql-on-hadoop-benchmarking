@@ -25,8 +25,9 @@ class Engine(object):
         :param cmd:
         :return:
         '''
-        (output, err) = run_shell_cmd(cmd)
+        output, err = run_shell_cmd(cmd)
         if err:
+	    logging.error("Shell command returns error, exiting... :" + err)
             exit(1)
 
     @staticmethod
@@ -36,7 +37,7 @@ class Engine(object):
         :param cmd:
         :return:
         '''
-        (output, err) = run_shell_cmd(cmd)
+        output, err = run_shell_cmd(cmd)
         if err:
             exit(1)
         return
@@ -46,18 +47,18 @@ class Engine(object):
     def perf_run(self, num_of_time, average_results=True):
          self.query_output.append('Performance Query Results:')
          for f in os.listdir(self.query_generator.query_dir):
-             if os.path.isfile(f):
+             if os.path.isfile(os.path.join(self.query_generator.query_dir,f)):
                 iterations = 0
                 elapse = 0
                 self.query_output.append('Running ' + f)
                 for i in range(1, num_of_time):
 
-                    run = self.perf_cmd + self.cmd + self.cmd_output
+                    run = self.perf_cmd + self.cmd + os.path.join(self.query_generator.query_dir,f) + self.cmd_output
                     output, err = run_shell_cmd(run)
                     if not err:
                         iterations += 1
                         self.query_output.append(output)
-                        elapse += output.split(',')[1]
+                        elapse += float(output.split(',')[-4])
 
                 if average_results:
                     elapse = 0 if iterations == 0 else elapse / iterations
@@ -76,7 +77,9 @@ class Engine(object):
         results = pool.map_async(run_shell_cmd, self.query_generator.queries, pool_size)
         pool.close()
         pool.join()
-        return 'concurrency returned in '
+        results.get()
+        logging.debug(results.get())
+        return 'total queries: ' + str(pool_size) + ' ;Concurrency tests returned in '
 
 
 
