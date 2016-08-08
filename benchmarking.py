@@ -27,21 +27,21 @@ if __name__ == '__main__':
     hive_engine = HiveEngine('hive -S -f  ', ' 2>&1 1>/dev/null', query_generator)
     # turn off system cache
     #hive_engine.setup('sudo echo 1 > /proc/sys/vm/drop_caches ')
-    hive_engine.perf_run(2)
+    hive_engine.run(2)
     hive_engine.report()
 
     # Performance testing for impala
     logging.info("Starting performance testing for Impala...")
     query_generator = QueryGenerator('', 'sql/impala')
     impala_engine = ImpalaEngine('impala-shell -B -f  ', ' -o impala.test.out 2>&1', query_generator)
-    impala_engine.perf_run(2)
+    impala_engine.run(2)
     impala_engine.report()
 
     # Performance testing for drill
     logging.info("Starting performance testing for Drill...")
     query_generator = QueryGenerator('', 'sql/drill')
     drill_engine = DrillEngine('sqlline -u  sqlline -u jdbc:drill:zk=ip-10-9-1-197:5181,ip-10-9-1-198:5181,ip-10-9-1-196:5181,ip-10-9-1-124:5181  --fastConnect=true --silent=true --showHeader=false -f ', ' 2>&1 1>/dev/null', query_generator)
-    drill_engine.perf_run(2)
+    drill_engine.run(2)
     drill_engine.report()
 
 
